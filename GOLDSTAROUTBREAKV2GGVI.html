@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@
   --purple: #3A0071;
   --danger: #FF4D4D;
   --safe: #4AE3C1;
-  --ai: #8A2BE2; /* New AI color */
+  --ai: #8A2BE2;
   --line: rgba(255, 255, 255, 0.1);
   --shadow: 0 4px 20px rgba(0,0,0,0.5);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -49,6 +49,22 @@ header {
   margin-bottom: 24px;
   box-shadow: var(--shadow);
   border-left: 4px solid var(--gold);
+  position: relative;
+}
+
+.lang-switch-container {
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+.lang-select {
+  background: rgba(0,0,0,0.3);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
 }
 
 h1 {
@@ -72,6 +88,30 @@ p {
   color: var(--muted);
   line-height: 1.6;
   margin: 0 0 16px;
+}
+
+/* RTL Support */
+html[dir="rtl"] {
+  text-align: right;
+}
+html[dir="rtl"] .lang-switch-container {
+  text-align: left;
+}
+html[dir="rtl"] header {
+  border-left: 1px solid var(--line);
+  border-right: 4px solid var(--gold);
+}
+html[dir="rtl"] .safe, html[dir="rtl"] .danger, html[dir="rtl"] .warning {
+  border-left-width: 1px;
+  border-right-width: 4px;
+}
+html[dir="rtl"] select, html[dir="rtl"] input {
+  background-position: left 1rem center;
+  text-align: right;
+}
+html[dir="rtl"] .result ul {
+  padding-right: 20px;
+  padding-left: 0;
 }
 
 /* Sections */
@@ -283,6 +323,11 @@ footer a:hover {
   text-align: justify;
 }
 
+/* RTL adjustment for footer */
+html[dir="rtl"] .footer-legal {
+  text-align: justify;
+}
+
 .highlight {
   color: var(--gold);
 }
@@ -303,101 +348,112 @@ footer a:hover {
 <div class="wrap">
 
   <header>
-    <h1><i class="fa-solid fa-shield-halved highlight"></i> Recall Check: Gold Star</h1>
-    <p>
+    <div class="lang-switch-container">
+      <select id="language-selector" class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="en">English (US)</option>
+        <option value="es">Español (Spanish)</option>
+        <option value="ar">العربية (Arabic)</option>
+        <option value="gu">ગુજરાતી (Gujarati)</option>
+        <option value="am">አማርኛ (Amharic)</option>
+        <option value="pt">Português (Portuguese)</option>
+        <option value="zh-CN">简体中文 (Chinese Simplified)</option>
+        <option value="zh-TW">繁體中文 (Chinese Traditional)</option>
+        <option value="fr">Français (French)</option>
+      </select>
+    </div>
+
+    <h1 data-i18n="appTitle"><i class="fa-solid fa-shield-halved highlight"></i> Recall Check: Gold Star</h1>
+    <p data-i18n="appDesc">
       This guided tool helps you determine risk levels for the <strong>Gold Star Distribution</strong> recall (food, pet food, and dry goods). 
       Answer the questions below to assess safety.
     </p>
     <div style="font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; display: inline-block;">
-      <i class="fa-solid fa-circle-info"></i> Updated: December 2025
+      <i class="fa-solid fa-circle-info"></i> <span data-i18n="updatedDate">Updated: December 2025</span>
     </div>
   </header>
 
   <!-- Standard Checker Section -->
   <section>
-    <h2><i class="fa-solid fa-location-dot"></i> Step 1: Source</h2>
+    <h2><i class="fa-solid fa-location-dot"></i> <span data-i18n="step1Title">Step 1: Source</span></h2>
     <div class="step">
-      <label for="store">Where did you buy the item?</label>
+      <label for="store" data-i18n="step1Label">Where did you buy the item?</label>
       <select id="store">
-        <option value="">-- Select Store Type --</option>
-        <option value="listed">Store listed on FDA/Recall Notice</option>
-        <option value="notlisted">Major chain NOT listed</option>
-        <option value="unknown">Small market / Co-op / Unsure</option>
+        <option value="" data-i18n="optStoreDefault">-- Select Store Type --</option>
+        <option value="listed" data-i18n="optStoreListed">Store listed on FDA/Recall Notice</option>
+        <option value="notlisted" data-i18n="optStoreNotListed">Major chain NOT listed</option>
+        <option value="unknown" data-i18n="optStoreUnknown">Small market / Co-op / Unsure</option>
       </select>
     </div>
 
-    <h2><i class="fa-solid fa-box-open"></i> Step 2: Product Type</h2>
+    <h2><i class="fa-solid fa-box-open"></i> <span data-i18n="step2Title">Step 2: Product Type</span></h2>
     <div class="step">
-      <label for="category">What category is the item?</label>
+      <label for="category" data-i18n="step2Label">What category is the item?</label>
       <select id="category">
-        <option value="">-- Select Category --</option>
-        <option value="shelf">Shelf-stable (Pasta, Snacks, Candy, Beverages)</option>
-        <option value="pet">Pet Food / Treats</option>
-        <option value="supplement">Supplements / Healthcare</option>
-        <option value="frozen">Frozen / Refrigerated Goods</option>
+        <option value="" data-i18n="optCatDefault">-- Select Category --</option>
+        <option value="shelf" data-i18n="optCatShelf">Shelf-stable (Pasta, Snacks, Candy, Beverages)</option>
+        <option value="pet" data-i18n="optCatPet">Pet Food / Treats</option>
+        <option value="supplement" data-i18n="optCatSupp">Supplements / Healthcare</option>
+        <option value="frozen" data-i18n="optCatFrozen">Frozen / Refrigerated Goods</option>
       </select>
     </div>
 
-    <h2><i class="fa-solid fa-list-check"></i> Step 3: FDA Status</h2>
+    <h2><i class="fa-solid fa-list-check"></i> <span data-i18n="step3Title">Step 3: FDA Status</span></h2>
     <div class="step">
-      <label for="listed">Is the exact product name/UPC on the recall list?</label>
+      <label for="listed" data-i18n="step3Label">Is the exact product name/UPC on the recall list?</label>
       <select id="listed">
-        <option value="">-- Select List Status --</option>
-        <option value="yes">Yes, exact match</option>
-        <option value="no">No, checked and not there</option>
-        <option value="unsure">I haven't checked / Unsure</option>
+        <option value="" data-i18n="optListDefault">-- Select List Status --</option>
+        <option value="yes" data-i18n="optListYes">Yes, exact match</option>
+        <option value="no" data-i18n="optListNo">No, checked and not there</option>
+        <option value="unsure" data-i18n="optListUnsure">I haven't checked / Unsure</option>
       </select>
     </div>
 
-    <button class="btn" onclick="checkRecall()">Check My Item</button>
+    <button class="btn" onclick="checkRecall()" data-i18n="btnCheck">Check My Item</button>
 
     <!-- Results Containers -->
     <div id="resultSafe" class="result safe">
-      <h3><i class="fa-solid fa-circle-check"></i> Likely Low Risk</h3>
-      <p>
-        Based on your answers, this item appears to be <strong>outside the primary scope</strong> of the recall.
-      </p>
-      <ul>
-        <li>Monitor local store notices just in case.</li>
-        <li>Frozen items are generally not affected by this dry-storage recall.</li>
-        <li>If the packaging is intact and clean, standard use is likely safe.</li>
-      </ul>
+      <h3><i class="fa-solid fa-circle-check"></i> <span data-i18n="resSafeTitle">Likely Low Risk</span></h3>
+      <div data-i18n="resSafeDesc">
+        <p>Based on your answers, this item appears to be <strong>outside the primary scope</strong> of the recall.</p>
+        <ul>
+          <li>Monitor local store notices just in case.</li>
+          <li>Frozen items are generally not affected by this dry-storage recall.</li>
+          <li>If the packaging is intact and clean, standard use is likely safe.</li>
+        </ul>
+      </div>
     </div>
 
     <div id="resultDanger" class="result danger">
-      <h3><i class="fa-solid fa-triangle-exclamation"></i> HIGH RISK: DO NOT USE</h3>
-      <p>
-        <strong>Your item matches critical recall criteria.</strong> The risk of contamination is high.
-      </p>
-      <ul>
-        <li><strong>STOP:</strong> Do not eat, use, or feed to pets.</li>
-        <li><strong>DISPOSE:</strong> Double-bag and trash securely so animals cannot reach it.</li>
-        <li><strong>CLEAN:</strong> Sanitize shelves or pantries where the item was stored.</li>
-        <li><strong>REFUND:</strong> Take a photo of the UPC and contact the retailer.</li>
-      </ul>
+      <h3><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="resDangerTitle">HIGH RISK: DO NOT USE</span></h3>
+      <div data-i18n="resDangerDesc">
+        <p><strong>Your item matches critical recall criteria.</strong> The risk of contamination is high.</p>
+        <ul>
+          <li><strong>STOP:</strong> Do not eat, use, or feed to pets.</li>
+          <li><strong>DISPOSE:</strong> Double-bag and trash securely so animals cannot reach it.</li>
+          <li><strong>CLEAN:</strong> Sanitize shelves or pantries where the item was stored.</li>
+        </ul>
+      </div>
 
       <!-- New: Action Links Block -->
       <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,77,77,0.3);">
         <p style="margin-bottom:10px; font-size:0.95rem;">
-          <strong>Step 1: Contact the Source</strong><br>
-          View the official company contact details (phone/email) on the FDA notice:
+          <strong data-i18n="step1Action">Step 1: Contact the Source</strong><br>
         </p>
         <a href="https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/gold-star-distribution-inc-issues-recall-certain-fda-regulated-products-three-states-including-drugs" target="_blank" class="btn" style="background: rgba(255,77,77,0.1); border: 1px solid var(--danger); color: var(--danger); font-size: 1rem; margin-bottom: 20px;">
-          <i class="fa-solid fa-up-right-from-square"></i> Get Official Contact Info
+          <i class="fa-solid fa-up-right-from-square"></i> <span data-i18n="btnContact">Get Official Contact Info</span>
         </a>
 
         <p style="margin-bottom:10px; font-size:0.95rem;">
-          <strong>Step 2: Request Refund Template</strong><br>
-          Need a sample email? Use our AI template drafter.
+          <strong data-i18n="step2Action">Step 2: Request Refund Template</strong><br>
         </p>
         
         <!-- SPECIFIC LEGAL NOTICE FOR AI TOOL -->
-        <div class="legal-notice">
+        <div class="legal-notice" data-i18n="legalNotice">
           <i class="fa-solid fa-scale-balanced"></i> <strong>LEGAL DISCLAIMER:</strong> This AI tool generates a generic sample template for informational purposes only. It is <strong>NOT</strong> legal advice and does not constitute a legal demand. By using this feature, you agree to hold V2G, GVI, and their affiliates harmless from any liability. You are responsible for reviewing and editing the content before sending.
         </div>
 
         <button class="btn btn-ai" style="width:100%" onclick="generateRefundEmail()">
-          ✨ Draft Refund Template (Sample Only)
+          ✨ <span data-i18n="btnDraft">Draft Refund Template</span>
         </button>
         <div id="refundLoader" class="loader"><i class="fa-solid fa-spinner"></i> Drafting email...</div>
         <div id="refundResult" class="ai-result"></div>
@@ -405,15 +461,15 @@ footer a:hover {
     </div>
 
     <div id="resultWarning" class="result warning">
-      <h3><i class="fa-solid fa-circle-exclamation"></i> CAUTION: VERIFY DETAILS</h3>
-      <p>
-        There is uncertainty about your item. It might be safe, but you should exercise caution.
-      </p>
-      <ul>
-        <li>Double-check the <a href="https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/gold-star-distribution-inc-issues-recall-certain-fda-regulated-products-three-states-including-drugs" target="_blank">FDA Recall List</a> for specific UPC codes.</li>
-        <li>If the item was bought at a listed store but isn't on the product list, ask the store manager.</li>
-        <li><strong>When in doubt, throw it out.</strong></li>
-      </ul>
+      <h3><i class="fa-solid fa-circle-exclamation"></i> <span data-i18n="resWarningTitle">CAUTION: VERIFY DETAILS</span></h3>
+      <div data-i18n="resWarningDesc">
+        <p>There is uncertainty about your item. It might be safe, but you should exercise caution.</p>
+        <ul>
+          <li>Double-check the FDA Recall List for specific UPC codes.</li>
+          <li>If the item was bought at a listed store but isn't on the product list, ask the store manager.</li>
+          <li><strong>When in doubt, throw it out.</strong></li>
+        </ul>
+      </div>
     </div>
     
     <div id="errorMsg" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 600;">
@@ -423,17 +479,17 @@ footer a:hover {
 
   <!-- AI Feature Section -->
   <section class="ai-section">
-    <h2><i class="fa-solid fa-robot" style="color: #c98eff"></i> AI Product Scout</h2>
-    <p>
+    <h2><i class="fa-solid fa-robot" style="color: #c98eff"></i> <span data-i18n="aiSectionTitle">AI Product Scout</span></h2>
+    <p data-i18n="aiSectionDesc">
       Not sure if your specific brand is involved? Enter the product name below. 
       <strong>Gemini</strong> will search the web for recall notices linking this product to Gold Star Distribution.
     </p>
     <div class="step">
-      <label for="productQuery">Product Name / Brand</label>
-      <input type="text" id="productQuery" placeholder="e.g., Blue Ribbon Spaghetti 1lb">
+      <label for="productQuery" data-i18n="step1Label">Product Name / Brand</label>
+      <input type="text" id="productQuery" placeholder="e.g., Blue Ribbon Spaghetti 1lb" data-i18n-placeholder="inputPlaceholder">
     </div>
     <button class="btn btn-ai" onclick="checkProductWithGemini()">
-      ✨ Scan with Gemini
+      ✨ <span data-i18n="btnScan">Scan with Gemini</span>
     </button>
     
     <div id="aiLoader" class="loader"><i class="fa-solid fa-spinner"></i> Searching recall databases...</div>
@@ -441,15 +497,15 @@ footer a:hover {
   </section>
 
   <section>
-    <h2><i class="fa-solid fa-user-doctor"></i> Health & Safety</h2>
-    <p>
-      <strong>Symptoms to watch for:</strong> This recall is related to unsanitary storage conditions (potential rodent infestation).
-    </p>
-    <ul>
-      <li>Nausea, vomiting, diarrhea, or abdominal pain.</li>
-      <li>Fever or flu-like symptoms (Salmonella risk).</li>
-    </ul>
-    <p>If symptoms persist, contact a healthcare provider and mention potential exposure to recalled food products.</p>
+    <h2><i class="fa-solid fa-user-doctor"></i> <span data-i18n="healthTitle">Health & Safety</span></h2>
+    <div data-i18n="healthDesc">
+      <p><strong>Symptoms to watch for:</strong> This recall is related to unsanitary storage conditions (potential rodent infestation).</p>
+      <ul>
+        <li>Nausea, vomiting, diarrhea, or abdominal pain.</li>
+        <li>Fever or flu-like symptoms (Salmonella risk).</li>
+      </ul>
+      <p>If symptoms persist, contact a healthcare provider.</p>
+    </div>
   </section>
 
   <footer>
@@ -460,19 +516,436 @@ footer a:hover {
     </p>
     
     <!-- Expanded Legal Footer -->
-    <div class="footer-legal">
+    <div class="footer-legal" data-i18n="footerLegal">
       <strong>TERMS OF USE AND LEGAL DISCLAIMER:</strong> 
       This website and its tools are provided for educational and informational purposes only. We are NOT the news, a law firm, or a government agency. We are an independent entity aggregating publicly available safety information. 
       <br><br>
-      <strong>NO LEGAL ADVICE:</strong> The content, including AI-generated email templates, does not constitute legal, medical, or professional advice. You should consult with a qualified attorney or healthcare provider for specific advice regarding your situation.
-      <br><br>
-      <strong>LIMITATION OF LIABILITY & INDEMNIFICATION:</strong> By using this site, you agree to indemnify, defend, and hold harmless V2G Multimedia, Global Village Initiative (GVI), their officers, directors, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, or expenses (including legal fees) arising out of or in any way connected with your access to or use of this website or the information contained herein. Use of any provided templates or information is strictly at your own risk.
+      <strong>NO LEGAL ADVICE:</strong> The content, including AI-generated email templates, does not constitute legal, medical, or professional advice. Use of any provided templates or information is strictly at your own risk.
     </div>
   </footer>
 
 </div>
 
 <script>
+// --- Translation Engine ---
+
+const translations = {
+  en: {
+    appTitle: "Recall Check: Gold Star",
+    appDesc: "This guided tool helps you determine risk levels for the <strong>Gold Star Distribution</strong> recall (food, pet food, and dry goods). Answer the questions below to assess safety.",
+    updatedDate: "Updated: December 2025",
+    step1Title: "Step 1: Source",
+    step1Label: "Where did you buy the item?",
+    optStoreDefault: "-- Select Store Type --",
+    optStoreListed: "Store listed on FDA/Recall Notice",
+    optStoreNotListed: "Major chain NOT listed",
+    optStoreUnknown: "Small market / Co-op / Unsure",
+    step2Title: "Step 2: Product Type",
+    step2Label: "What category is the item?",
+    optCatDefault: "-- Select Category --",
+    optCatShelf: "Shelf-stable (Pasta, Snacks, Candy, Beverages)",
+    optCatPet: "Pet Food / Treats",
+    optCatSupp: "Supplements / Healthcare",
+    optCatFrozen: "Frozen / Refrigerated Goods",
+    step3Title: "Step 3: FDA Status",
+    step3Label: "Is the exact product name/UPC on the recall list?",
+    optListDefault: "-- Select List Status --",
+    optListYes: "Yes, exact match",
+    optListNo: "No, checked and not there",
+    optListUnsure: "I haven't checked / Unsure",
+    btnCheck: "Check My Item",
+    resSafeTitle: "Likely Low Risk",
+    resSafeDesc: "<p>Based on your answers, this item appears to be <strong>outside the primary scope</strong> of the recall.</p><ul><li>Monitor local store notices just in case.</li><li>Frozen items are generally not affected by this dry-storage recall.</li></ul>",
+    resDangerTitle: "HIGH RISK: DO NOT USE",
+    resDangerDesc: "<p><strong>Your item matches critical recall criteria.</strong> The risk of contamination is high.</p><ul><li><strong>STOP:</strong> Do not eat, use, or feed to pets.</li><li><strong>DISPOSE:</strong> Double-bag and trash securely.</li><li><strong>CLEAN:</strong> Sanitize shelves where stored.</li></ul>",
+    resWarningTitle: "CAUTION: VERIFY DETAILS",
+    resWarningDesc: "<p>There is uncertainty about your item. It might be safe, but you should exercise caution.</p><ul><li>Double-check the FDA Recall List.</li><li><strong>When in doubt, throw it out.</strong></li></ul>",
+    step1Action: "Step 1: Contact the Source",
+    btnContact: "Get Official Contact Info",
+    step2Action: "Step 2: Request Refund Template",
+    legalNotice: "<i class='fa-solid fa-scale-balanced'></i> <strong>LEGAL DISCLAIMER:</strong> This AI tool generates a generic sample template for informational purposes only. It is <strong>NOT</strong> legal advice.",
+    btnDraft: "Draft Refund Template",
+    aiSectionTitle: "AI Product Scout",
+    aiSectionDesc: "Not sure if your specific brand is involved? Enter the product name below. Gemini will search the web.",
+    inputPlaceholder: "e.g., Blue Ribbon Spaghetti 1lb",
+    btnScan: "Scan with Gemini",
+    healthTitle: "Health & Safety",
+    healthDesc: "<p><strong>Symptoms to watch for:</strong> Nausea, vomiting, fever. If symptoms persist, contact a doctor.</p>",
+    footerLegal: "<strong>TERMS:</strong> Tools provided for educational purposes only. We are NOT a law firm. Use at your own risk."
+  },
+  es: {
+    appTitle: "Verificación de Retiro: Gold Star",
+    appDesc: "Esta herramienta ayuda a determinar el nivel de riesgo para el retiro de <strong>Gold Star Distribution</strong> (alimentos, comida para mascotas).",
+    updatedDate: "Actualizado: Diciembre 2025",
+    step1Title: "Paso 1: Origen",
+    step1Label: "¿Dónde compró el artículo?",
+    optStoreDefault: "-- Seleccione Tipo de Tienda --",
+    optStoreListed: "Tienda listada en el aviso de la FDA",
+    optStoreNotListed: "Cadena grande NO listada",
+    optStoreUnknown: "Mercado pequeño / No seguro",
+    step2Title: "Paso 2: Tipo de Producto",
+    step2Label: "¿Qué categoría es?",
+    optCatDefault: "-- Seleccione Categoría --",
+    optCatShelf: "No perecederos (Pasta, Snacks, Bebidas)",
+    optCatPet: "Comida para mascotas / Premios",
+    optCatSupp: "Suplementos / Salud",
+    optCatFrozen: "Congelados / Refrigerados",
+    step3Title: "Paso 3: Estado FDA",
+    step3Label: "¿Está el nombre/UPC en la lista?",
+    optListDefault: "-- Seleccione Estado --",
+    optListYes: "Sí, coincidencia exacta",
+    optListNo: "No, revisé y no está",
+    optListUnsure: "No he revisado / No seguro",
+    btnCheck: "Verificar Artículo",
+    resSafeTitle: "Probablemente Bajo Riesgo",
+    resSafeDesc: "<p>Basado en sus respuestas, este artículo parece estar <strong>fuera del alcance</strong> del retiro.</p><ul><li>Monitoree avisos locales.</li><li>Los congelados generalmente no están afectados.</li></ul>",
+    resDangerTitle: "ALTO RIESGO: NO USAR",
+    resDangerDesc: "<p><strong>Su artículo coincide con criterios críticos.</strong> El riesgo es alto.</p><ul><li><strong>DETÉNGASE:</strong> No coma ni use.</li><li><strong>DESECHE:</strong> Tire a la basura de forma segura.</li><li><strong>LIMPIE:</strong> Desinfecte las estanterías.</li></ul>",
+    resWarningTitle: "PRECAUCIÓN: VERIFIQUE",
+    resWarningDesc: "<p>Hay incertidumbre. Podría ser seguro, pero tenga cuidado.</p><ul><li>Revise la lista de la FDA.</li><li><strong>Ante la duda, deséchelo.</strong></li></ul>",
+    step1Action: "Paso 1: Contactar la Fuente",
+    btnContact: "Info de Contacto Oficial",
+    step2Action: "Paso 2: Plantilla de Reembolso",
+    legalNotice: "<i class='fa-solid fa-scale-balanced'></i> <strong>AVISO LEGAL:</strong> Esta herramienta genera una plantilla genérica solo para información. NO es asesoramiento legal.",
+    btnDraft: "Redactar Plantilla",
+    aiSectionTitle: "Explorador de Productos IA",
+    aiSectionDesc: "¿No está seguro de su marca? Ingrese el nombre abajo. Gemini buscará en la web.",
+    inputPlaceholder: "ej., Espagueti Blue Ribbon 1lb",
+    btnScan: "Escanear con Gemini",
+    healthTitle: "Salud y Seguridad",
+    healthDesc: "<p><strong>Síntomas:</strong> Náuseas, vómitos, fiebre. Si persisten, contacte a un médico.</p>",
+    footerLegal: "<strong>TÉRMINOS:</strong> Herramienta educativa. NO somos abogados. Úselo bajo su propio riesgo."
+  },
+  ar: {
+    appTitle: "فحص الاستدعاء: Gold Star",
+    appDesc: "تساعدك هذه الأداة في تحديد مستويات الخطر لاستدعاء <strong>Gold Star Distribution</strong> (الأغذية، أغذية الحيوانات الأليفة).",
+    updatedDate: "تحديث: ديسمبر 2025",
+    step1Title: "الخطوة 1: المصدر",
+    step1Label: "من أين اشتريت المنتج؟",
+    optStoreDefault: "-- اختر نوع المتجر --",
+    optStoreListed: "متجر مدرج في إشعار FDA",
+    optStoreNotListed: "سلسلة كبرى غير مدرجة",
+    optStoreUnknown: "سوق صغير / غير متأكد",
+    step2Title: "الخطوة 2: نوع المنتج",
+    step2Label: "ما هي فئة المنتج؟",
+    optCatDefault: "-- اختر الفئة --",
+    optCatShelf: "السلع الجافة (مكرونة، وجبات خفيفة)",
+    optCatPet: "طعام حيوانات أليفة",
+    optCatSupp: "مكملات غذائية",
+    optCatFrozen: "مجمدات / مبردات",
+    step3Title: "الخطوة 3: حالة FDA",
+    step3Label: "هل المنتج موجود في قائمة الاستدعاء؟",
+    optListDefault: "-- اختر الحالة --",
+    optListYes: "نعم، تطابق تام",
+    optListNo: "لا، تحققت ولم أجده",
+    optListUnsure: "لم أتحقق / غير متأكد",
+    btnCheck: "فحص المنتج",
+    resSafeTitle: "احتمال خطر منخفض",
+    resSafeDesc: "<p>بناءً على إجاباتك، يبدو هذا المنتج <strong>خارج نطاق</strong> الاستدعاء.</p><ul><li>راقب إشعارات المتجر.</li><li>المنتجات المجمدة عادة غير متأثرة.</li></ul>",
+    resDangerTitle: "خطر عالي: لا تستخدمه",
+    resDangerDesc: "<p><strong>المنتج يطابق معايير الاستدعاء.</strong> خطر التلوث مرتفع.</p><ul><li><strong>توقف:</strong> لا تأكل أو تستخدم المنتج.</li><li><strong>تخلص منه:</strong> ضعه في القمامة بشكل آمن.</li><li><strong>نظف:</strong> عقم الأرفف.</li></ul>",
+    resWarningTitle: "تحذير: تحقق من التفاصيل",
+    resWarningDesc: "<p>هناك عدم يقين. قد يكون آمنًا، لكن توخ الحذر.</p><ul><li>راجع قائمة FDA.</li><li><strong>عند الشك، تخلص منه.</strong></li></ul>",
+    step1Action: "الخطوة 1: اتصل بالمصدر",
+    btnContact: "معلومات الاتصال الرسمية",
+    step2Action: "الخطوة 2: طلب استرداد الأموال",
+    legalNotice: "<i class='fa-solid fa-scale-balanced'></i> <strong>إشعار قانوني:</strong> هذه الأداة تنشئ نموذجًا عامًا للمعلومات فقط. هذه ليست مشورة قانونية.",
+    btnDraft: "إنشاء مسودة",
+    aiSectionTitle: "مستكشف المنتجات بالذكاء الاصطناعي",
+    aiSectionDesc: "غير متأكد من العلامة التجارية؟ أدخل الاسم أدناه وسيبحث Gemini.",
+    inputPlaceholder: "مثل: مكرونة بلو ريبون",
+    btnScan: "فحص باستخدام Gemini",
+    healthTitle: "الصحة والسلامة",
+    healthDesc: "<p><strong>الأعراض:</strong> غثيان، قيء، حمى. اتصل بالطبيب إذا استمرت الأعراض.</p>",
+    footerLegal: "<strong>الشروط:</strong> للأغراض التعليمية فقط. نحن لسنا محامين."
+  },
+  gu: {
+    appTitle: "રિકોલ તપાસ: Gold Star",
+    appDesc: "આ સાધન તમને Gold Star Distribution રિકોલ (ખોરાક, પાલતુ ખોરાક) માટે જોખમ નક્કી કરવામાં મદદ કરે છે.",
+    updatedDate: "અપડેટ: ડિસેમ્બર 2025",
+    step1Title: "પગલું 1: સ્ત્રોત",
+    step1Label: "તમે વસ્તુ ક્યાંથી ખરીદી?",
+    optStoreDefault: "-- સ્ટોરનો પ્રકાર પસંદ કરો --",
+    optStoreListed: "FDA રિકોલ લિસ્ટમાં સ્ટોર",
+    optStoreNotListed: "મોટી ચેન લિસ્ટમાં નથી",
+    optStoreUnknown: "નાનું બજાર / ખાતરી નથી",
+    step2Title: "પગલું 2: ઉત્પાદન પ્રકાર",
+    step2Label: "વસ્તુ કઈ શ્રેણીની છે?",
+    optCatDefault: "-- શ્રેણી પસંદ કરો --",
+    optCatShelf: "સૂકા સામાન (પાસ્તા, નાસ્તો, પીણાં)",
+    optCatPet: "પાલતુ ખોરાક",
+    optCatSupp: "પૂરક / આરોગ્યસંભાળ",
+    optCatFrozen: "ફ્રોઝન સામાન",
+    step3Title: "પગલું 3: FDA સ્થિતિ",
+    step3Label: "શું ઉત્પાદનનું નામ લિસ્ટમાં છે?",
+    optListDefault: "-- સ્થિતિ પસંદ કરો --",
+    optListYes: "હા, ચોક્કસ મેચ",
+    optListNo: "ના, તપાસ્યું અને નથી",
+    optListUnsure: "ખાતરી નથી",
+    btnCheck: "મારી વસ્તુ તપાસો",
+    resSafeTitle: "ઓછું જોખમ હોઈ શકે છે",
+    resSafeDesc: "<p>તમારા જવાબોના આધારે, આ વસ્તુ રિકોલની બહાર હોય તેવું લાગે છે.</p>",
+    resDangerTitle: "ઉચ્ચ જોખમ: ઉપયોગ કરશો નહીં",
+    resDangerDesc: "<p><strong>તમારી વસ્તુ રિકોલના માપદંડ સાથે મેચ થાય છે.</strong></p><ul><li>ઉપયોગ કરશો નહીં.</li><li>સુરક્ષિત રીતે નિકાલ કરો.</li></ul>",
+    resWarningTitle: "સાવચેતી: વિગતો ચકાસો",
+    resWarningDesc: "<p>અનિશ્ચિતતા છે. સાવચેતી રાખો.</p>",
+    step1Action: "પગલું 1: સંપર્ક કરો",
+    btnContact: "સત્તાવાર સંપર્ક માહિતી",
+    step2Action: "પગલું 2: રિફંડ વિનંતી",
+    legalNotice: "કાયદાકીય અસ્વીકરણ: આ કાયદાકીય સલાહ નથી.",
+    btnDraft: "ડ્રાફ્ટ તૈયાર કરો",
+    aiSectionTitle: "AI પ્રોડક્ટ સ્કાઉટ",
+    aiSectionDesc: "ખાતરી નથી? ઉત્પાદનનું નામ દાખલ કરો.",
+    inputPlaceholder: "દા.ત., બ્લુ રિબન પાસ્તા",
+    btnScan: "Gemini સાથે સ્કેન કરો",
+    healthTitle: "આરોગ્ય અને સુરક્ષા",
+    healthDesc: "<p>લક્ષણો: ઉલટી, તાવ. ડૉક્ટરનો સંપર્ક કરો.</p>",
+    footerLegal: "શરતો: ફક્ત શૈક્ષણિક હેતુ માટે."
+  },
+  am: {
+    appTitle: "የማስታወሻ ቼክ: Gold Star",
+    appDesc: "ይህ መሳሪያ በGold Star Distribution ክለሳ (ምግብ፣ የቤት እንስሳት ምግብ) ላይ ያለውን አደጋ ለመወሰን ይረዳዎታል።",
+    updatedDate: "የዘመነ: ዲሴምበር 2025",
+    step1Title: "ደረጃ 1: ምንጭ",
+    step1Label: "እቃውን ከየት ገዙት?",
+    optStoreDefault: "-- የመደብር አይነት ይምረጡ --",
+    optStoreListed: "በFDA ዝርዝር ውስጥ ያለ መደብር",
+    optStoreNotListed: "ትልቅ መደብር (በዝርዝሩ የሌለ)",
+    optStoreUnknown: "ትንሽ ገበያ / እርግጠኛ አይደለሁም",
+    step2Title: "ደረጃ 2: የምርት አይነት",
+    step2Label: "እቃው ምን አይነት ነው?",
+    optCatDefault: "-- ምድብ ይምረጡ --",
+    optCatShelf: "የደረቁ ምግቦች (ፓስታ፣ መክሰስ)",
+    optCatPet: "የቤት እንስሳት ምግብ",
+    optCatSupp: "ተጨማሪዎች / መድሃኒቶች",
+    optCatFrozen: "የቀዘቀዘ ምግብ",
+    step3Title: "ደረጃ 3: FDA ሁኔታ",
+    step3Label: "የምርቱ ስም ዝርዝሩ ላይ አለ?",
+    optListDefault: "-- ሁኔታ ይምረጡ --",
+    optListYes: "አዎ፣ በትክክል ይዛመዳል",
+    optListNo: "አይ፣ ፈትሸዋለሁ የለም",
+    optListUnsure: "እርግጠኛ አይደለሁም",
+    btnCheck: "እቃዬን ፈትሽ",
+    resSafeTitle: "ዝቅተኛ አደጋ",
+    resSafeDesc: "<p>በመልሶችዎ መሰረት፣ ይህ እቃ ከክለሳው ውጪ የሆነ ይመስላል።</p>",
+    resDangerTitle: "ከፍተኛ አደጋ: አይጠቀሙ",
+    resDangerDesc: "<p><strong>ይህ እቃ አደገኛ ሊሆን ይችላል።</strong></p><ul><li>አይበሉት ወይም አይጠቀሙ።</li><li>በጥንቃቄ ያስወግዱት።</li></ul>",
+    resWarningTitle: "ጥንቃቄ: ያረጋግጡ",
+    resWarningDesc: "<p>እርግጠኛነት የለም። ጥንቃቄ ያድርጉ።</p>",
+    step1Action: "ደረጃ 1: ምንጩን ያነጋግሩ",
+    btnContact: "ኦፊሴላዊ የመገናኛ መረጃ",
+    step2Action: "ደረጃ 2: የገንዘብ ተመላሽ ጥያቄ",
+    legalNotice: "ህጋዊ ማሳሰቢያ: ይህ የህግ ምክር አይደለም።",
+    btnDraft: "ረቂቅ አዘጋጅ",
+    aiSectionTitle: "AI የምርት ፍለጋ",
+    aiSectionDesc: "እርግጠኛ አይደሉም? የምርቱን ስም ያስገቡ።",
+    inputPlaceholder: "ለምሳሌ: ብሉ ሪቦን ፓስታ",
+    btnScan: "በGemini ይፈልጉ",
+    healthTitle: "ጤና እና ደህንነት",
+    healthDesc: "<p>ምልክቶች: ማቅለሽለሽ, ትኩሳት. ሐኪም ያማክሩ።</p>",
+    footerLegal: "ደንቦች: ለትምህርታዊ ዓላማ ብቻ።"
+  },
+  pt: {
+    appTitle: "Verificação de Recall: Gold Star",
+    appDesc: "Esta ferramenta ajuda a determinar o risco do recall da Gold Star Distribution.",
+    updatedDate: "Atualizado: Dezembro 2025",
+    step1Title: "Passo 1: Fonte",
+    step1Label: "Onde você comprou o item?",
+    optStoreDefault: "-- Selecione a Loja --",
+    optStoreListed: "Loja listada no aviso da FDA",
+    optStoreNotListed: "Grande rede NÃO listada",
+    optStoreUnknown: "Pequeno mercado / Não sei",
+    step2Title: "Passo 2: Categoria",
+    step2Label: "Qual a categoria do item?",
+    optCatDefault: "-- Selecione Categoria --",
+    optCatShelf: "Alimentos secos (Massas, Snacks)",
+    optCatPet: "Ração para pets",
+    optCatSupp: "Suplementos",
+    optCatFrozen: "Congelados / Refrigerados",
+    step3Title: "Passo 3: Status FDA",
+    step3Label: "O produto está na lista?",
+    optListDefault: "-- Selecione Status --",
+    optListYes: "Sim, correspondência exata",
+    optListNo: "Não, verifiquei e não está",
+    optListUnsure: "Não tenho certeza",
+    btnCheck: "Verificar Item",
+    resSafeTitle: "Provável Baixo Risco",
+    resSafeDesc: "<p>Item parece estar fora do escopo.</p>",
+    resDangerTitle: "ALTO RISCO: NÃO USE",
+    resDangerDesc: "<p><strong>Item corresponde aos critérios.</strong></p><ul><li>NÃO consuma.</li><li>Descarte com segurança.</li></ul>",
+    resWarningTitle: "CUIDADO: VERIFIQUE",
+    resWarningDesc: "<p>Há incerteza. Tenha cautela.</p>",
+    step1Action: "Passo 1: Contato",
+    btnContact: "Info Oficial",
+    step2Action: "Passo 2: Reembolso",
+    legalNotice: "AVISO LEGAL: Isto não é aconselhamento jurídico.",
+    btnDraft: "Criar Rascunho",
+    aiSectionTitle: "AI Product Scout",
+    aiSectionDesc: "Digite o nome do produto abaixo.",
+    inputPlaceholder: "ex: Macarrão Blue Ribbon",
+    btnScan: "Escanear com Gemini",
+    healthTitle: "Saúde e Segurança",
+    healthDesc: "<p>Sintomas: Náusea, febre. Contate um médico.</p>",
+    footerLegal: "Termos: Apenas para fins educacionais."
+  },
+  "zh-CN": {
+    appTitle: "召回检查：Gold Star",
+    appDesc: "此工具帮助您确认 Gold Star Distribution 召回风险（食品、宠物食品）。",
+    updatedDate: "更新：2025年12月",
+    step1Title: "步骤 1：来源",
+    step1Label: "您在哪里购买的？",
+    optStoreDefault: "-- 选择商店类型 --",
+    optStoreListed: "FDA通知中列出的商店",
+    optStoreNotListed: "未列出的主要连锁店",
+    optStoreUnknown: "小市场 / 不确定",
+    step2Title: "步骤 2：产品类型",
+    step2Label: "产品类别是什么？",
+    optCatDefault: "-- 选择类别 --",
+    optCatShelf: "耐储食品（面食、零食）",
+    optCatPet: "宠物食品",
+    optCatSupp: "补充剂 / 保健品",
+    optCatFrozen: "冷冻 / 冷藏食品",
+    step3Title: "步骤 3：FDA 状态",
+    step3Label: "产品名称/UPC是否在列表中？",
+    optListDefault: "-- 选择状态 --",
+    optListYes: "是，完全匹配",
+    optListNo: "否，已检查且不在",
+    optListUnsure: "不确定",
+    btnCheck: "检查我的物品",
+    resSafeTitle: "可能低风险",
+    resSafeDesc: "<p>根据您的回答，此物品可能不在召回范围内。</p>",
+    resDangerTitle: "高风险：请勿使用",
+    resDangerDesc: "<p><strong>您的物品符合召回标准。</strong></p><ul><li>请勿食用。</li><li>安全丢弃。</li></ul>",
+    resWarningTitle: "注意：核实详情",
+    resWarningDesc: "<p>存在不确定性。请谨慎。</p>",
+    step1Action: "步骤 1：联系来源",
+    btnContact: "官方联系信息",
+    step2Action: "步骤 2：退款申请",
+    legalNotice: "法律免责声明：这不是法律建议。",
+    btnDraft: "起草退款模板",
+    aiSectionTitle: "AI 产品侦察",
+    aiSectionDesc: "不确定品牌？输入产品名称。",
+    inputPlaceholder: "例如：Blue Ribbon 意大利面",
+    btnScan: "用 Gemini 扫描",
+    healthTitle: "健康与安全",
+    healthDesc: "<p>症状：恶心、发烧。请联系医生。</p>",
+    footerLegal: "条款：仅用于教育目的。"
+  },
+  "zh-TW": {
+    appTitle: "召回檢查：Gold Star",
+    appDesc: "此工具協助您確認 Gold Star Distribution 召回風險（食品、寵物食品）。",
+    updatedDate: "更新：2025年12月",
+    step1Title: "步驟 1：來源",
+    step1Label: "您在哪裡購買的？",
+    optStoreDefault: "-- 選擇商店類型 --",
+    optStoreListed: "FDA通知中列出的商店",
+    optStoreNotListed: "未列出的主要連鎖店",
+    optStoreUnknown: "小市場 / 不確定",
+    step2Title: "步驟 2：產品類型",
+    step2Label: "產品類別是什麼？",
+    optCatDefault: "-- 選擇類別 --",
+    optCatShelf: "耐儲食品（麵食、零食）",
+    optCatPet: "寵物食品",
+    optCatSupp: "補充劑 / 保健品",
+    optCatFrozen: "冷凍 / 冷藏食品",
+    step3Title: "步驟 3：FDA 狀態",
+    step3Label: "產品名稱/UPC是否在列表中？",
+    optListDefault: "-- 選擇狀態 --",
+    optListYes: "是，完全匹配",
+    optListNo: "否，已檢查且不在",
+    optListUnsure: "不確定",
+    btnCheck: "檢查我的物品",
+    resSafeTitle: "可能低風險",
+    resSafeDesc: "<p>根據您的回答，此物品可能不在召回範圍內。</p>",
+    resDangerTitle: "高風險：請勿使用",
+    resDangerDesc: "<p><strong>您的物品符合召回標準。</strong></p><ul><li>請勿食用。</li><li>安全丟棄。</li></ul>",
+    resWarningTitle: "注意：核實詳情",
+    resWarningDesc: "<p>存在不確定性。請謹慎。</p>",
+    step1Action: "步驟 1：聯繫來源",
+    btnContact: "官方聯繫信息",
+    step2Action: "步驟 2：退款申請",
+    legalNotice: "法律免責聲明：這不是法律建議。",
+    btnDraft: "起草退款模板",
+    aiSectionTitle: "AI 產品偵察",
+    aiSectionDesc: "不確定品牌？輸入產品名稱。",
+    inputPlaceholder: "例如：Blue Ribbon 義大利麵",
+    btnScan: "用 Gemini 掃描",
+    healthTitle: "健康與安全",
+    healthDesc: "<p>症狀：噁心、發燒。請聯繫醫生。</p>",
+    footerLegal: "條款：僅用於教育目的。"
+  },
+  fr: {
+    appTitle: "Vérification Rappel: Gold Star",
+    appDesc: "Cet outil aide à déterminer les risques liés au rappel Gold Star Distribution.",
+    updatedDate: "Mis à jour: Décembre 2025",
+    step1Title: "Étape 1: Source",
+    step1Label: "Où avez-vous acheté l'article ?",
+    optStoreDefault: "-- Choisir le type de magasin --",
+    optStoreListed: "Magasin listé par la FDA",
+    optStoreNotListed: "Chaîne majeure NON listée",
+    optStoreUnknown: "Petit marché / Incertain",
+    step2Title: "Étape 2: Type de Produit",
+    step2Label: "Quelle est la catégorie ?",
+    optCatDefault: "-- Choisir la catégorie --",
+    optCatShelf: "Produits secs (Pâtes, Snacks)",
+    optCatPet: "Nourriture pour animaux",
+    optCatSupp: "Compléments / Santé",
+    optCatFrozen: "Produits surgelés / réfrigérés",
+    step3Title: "Étape 3: Statut FDA",
+    step3Label: "Le produit est-il sur la liste ?",
+    optListDefault: "-- Choisir le statut --",
+    optListYes: "Oui, correspondance exacte",
+    optListNo: "Non, vérifié et absent",
+    optListUnsure: "Incertain",
+    btnCheck: "Vérifier",
+    resSafeTitle: "Probablement Sans Risque",
+    resSafeDesc: "<p>L'article semble hors de cause.</p>",
+    resDangerTitle: "HAUT RISQUE : NE PAS UTILISER",
+    resDangerDesc: "<p><strong>L'article correspond aux critères.</strong></p><ul><li>NE PAS consommer.</li><li>Jeter en sécurité.</li></ul>",
+    resWarningTitle: "ATTENTION : VÉRIFIER",
+    resWarningDesc: "<p>Incertitude. Soyez prudent.</p>",
+    step1Action: "Étape 1 : Contacter",
+    btnContact: "Info de Contact Officielle",
+    step2Action: "Étape 2 : Demande de Remboursement",
+    legalNotice: "AVIS JURIDIQUE : Ceci n'est pas un conseil juridique.",
+    btnDraft: "Rédiger Modèle",
+    aiSectionTitle: "Éclaireur Produit IA",
+    aiSectionDesc: "Pas sûr de la marque ? Entrez le nom.",
+    inputPlaceholder: "ex: Pâtes Blue Ribbon",
+    btnScan: "Scanner avec Gemini",
+    healthTitle: "Santé et Sécurité",
+    healthDesc: "<p>Symptômes : Nausées, fièvre. Contactez un médecin.</p>",
+    footerLegal: "Termes : À des fins éducatives seulement."
+  }
+};
+
+function changeLanguage(lang) {
+  // 1. Handle RTL
+  if (lang === 'ar') {
+    document.documentElement.setAttribute('dir', 'rtl');
+  } else {
+    document.documentElement.setAttribute('dir', 'ltr');
+  }
+
+  // 2. Update all data-i18n elements
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      el.innerHTML = translations[lang][key]; 
+    }
+  });
+
+  // 3. Update all data-i18n-placeholder elements
+  const placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+  placeholders.forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[lang] && translations[lang][key]) {
+      el.setAttribute('placeholder', translations[lang][key]);
+    }
+  });
+}
+
 // --- Standard Logic ---
 function checkRecall() {
   const store = document.getElementById('store').value;
@@ -534,9 +1007,7 @@ async function callGemini(prompt, useSearch = false) {
     payload.tools = [{ "google_search": {} }];
   }
 
-  // Exponential backoff retry logic
   const delays = [1000, 2000, 4000, 8000, 16000];
-  
   for (let i = 0; i <= delays.length; i++) {
     try {
       const response = await fetch(url, {
@@ -544,24 +1015,25 @@ async function callGemini(prompt, useSearch = false) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
       const data = await response.json();
       return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-      
     } catch (error) {
-      if (i === delays.length) throw error; // Re-throw after last attempt
+      if (i === delays.length) throw error;
       await new Promise(r => setTimeout(r, delays[i]));
     }
   }
 }
 
-// Feature 1: AI Product Scout (Search Grounded)
+// Feature 1: AI Product Scout (Multilingual)
 async function checkProductWithGemini() {
   const product = document.getElementById('productQuery').value;
   const resultDiv = document.getElementById('aiResult');
   const loader = document.getElementById('aiLoader');
+  
+  // Get Current Language
+  const langCode = document.getElementById('language-selector').value;
+  const langName = document.getElementById('language-selector').selectedOptions[0].text;
 
   if (!product.trim()) {
     resultDiv.innerHTML = "<span style='color:var(--danger)'>Please enter a product name.</span>";
@@ -573,18 +1045,18 @@ async function checkProductWithGemini() {
   resultDiv.style.display = 'none';
 
   const prompt = `
-    The user is asking about a specific product: "${product}" in the context of the Gold Star Distribution recall (which involves rodent infestation/sanitation issues affecting dry goods, pet food, etc).
+    The user is asking about a specific product: "${product}" in the context of the Gold Star Distribution recall.
     
     Task:
-    1. Search for "${product} Gold Star Distribution recall" or general recall news.
-    2. Determine if this specific brand or product has been mentioned in relation to the Gold Star recall.
+    1. Search for "${product} Gold Star Distribution recall".
+    2. Determine if this specific brand or product has been mentioned.
     3. If yes, warn the user.
-    4. If no specific mention is found, advise the user to check the "Distributed By" label for "Gold Star" and inspect for signs of damage, as it might still be affected if bought from a recalled store.
-    5. Be concise, empathetic, and prioritize safety. Use formatting (bolding) for key advice.
+    4. If no specific mention is found, advise checking the "Distributed By" label for "Gold Star".
+    5. **IMPORTANT:** Respond entirely in ${langName}.
   `;
 
   try {
-    const text = await callGemini(prompt, true); // true = enable Google Search
+    const text = await callGemini(prompt, true);
     resultDiv.innerHTML = marked.parse(text);
     resultDiv.style.display = 'block';
   } catch (err) {
@@ -596,33 +1068,32 @@ async function checkProductWithGemini() {
   }
 }
 
-// Feature 2: Refund Email Drafter
+// Feature 2: Refund Email Drafter (Multilingual)
 async function generateRefundEmail() {
-  const store = document.getElementById('store').value;
-  // If store is generic value, try to infer or ask generic
-  let storeName = "the store Manager";
-  if(store === "listed") storeName = "Customer Service";
-  
   const resultDiv = document.getElementById('refundResult');
   const loader = document.getElementById('refundLoader');
+  
+  // Get Current Language
+  const langCode = document.getElementById('language-selector').value;
+  const langName = document.getElementById('language-selector').selectedOptions[0].text;
 
   loader.style.display = 'block';
   resultDiv.style.display = 'none';
 
   const prompt = `
-    Draft a generic, polite, but firm consumer refund request email (or script) for a customer to send to a retailer regarding the Gold Star Distribution recall.
-    The customer purchased an item that matches the recall criteria.
+    Draft a generic, polite, but firm consumer refund request email (or script) regarding the Gold Star Distribution recall.
     
-    IMPORTANT: This is a SAMPLE only. Do not act as a lawyer.
-    Include placeholders like [Product Name], [Date of Purchase], and [Receipt ID].
-    Mention that the item is unsafe due to the FDA-announced rodent infestation recall at the distribution level.
-    Ask for a full refund or store credit based on consumer protection standards.
-    Keep it professional and short.
+    IMPORTANT: This is a SAMPLE only. 
+    1. Language: Write the entire email in ${langName}.
+    2. Context: The item is unsafe due to rodent infestation recall.
+    3. Request: Full refund or store credit.
+    4. Include placeholders like [Product Name], [Date].
+    5. Keep it professional.
   `;
 
   try {
     const text = await callGemini(prompt, false);
-    resultDiv.innerHTML = "<strong>Copy this sample template:</strong><br><br>" + marked.parse(text);
+    resultDiv.innerHTML = "<strong>Copy:</strong><br><br>" + marked.parse(text);
     resultDiv.style.display = 'block';
   } catch (err) {
     resultDiv.innerHTML = "⚠️ Error generating draft.";
