@@ -7,6 +7,8 @@
 <meta name="description" content="Check if your food, pet food, or household item is affected by the Gold Star Distribution recall. Clear steps. No panic. V2G × GVI public safety guide.">
 <!-- Font Awesome for Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Markdown Parser -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
 :root {
@@ -18,6 +20,7 @@
   --purple: #3A0071;
   --danger: #FF4D4D;
   --safe: #4AE3C1;
+  --ai: #8A2BE2; /* New AI color */
   --line: rgba(255, 255, 255, 0.1);
   --shadow: 0 4px 20px rgba(0,0,0,0.5);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -81,6 +84,11 @@ section {
   transition: transform 0.2s ease;
 }
 
+.ai-section {
+  border: 1px solid var(--ai);
+  background: linear-gradient(160deg, rgba(13, 13, 33, 0.8), rgba(138, 43, 226, 0.1));
+}
+
 .step {
   margin-bottom: 24px;
 }
@@ -94,23 +102,19 @@ label {
 }
 
 /* Inputs */
-select {
+select, input[type="text"] {
   width: 100%;
   padding: 14px;
   border-radius: 8px;
   border: 1px solid var(--line);
   background: #0b0a1a;
   color: var(--ink);
-  font-size: 16px; /* Prevents zoom on iPhone */
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23C8C6E8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 0.65em auto;
+  font-size: 16px; 
+  box-sizing: border-box;
   transition: border-color 0.3s;
 }
 
-select:focus {
+select:focus, input[type="text"]:focus {
   outline: none;
   border-color: var(--gold);
   box-shadow: 0 0 0 2px rgba(229, 193, 0, 0.2);
@@ -121,9 +125,21 @@ select:focus {
   margin-top: 24px;
   padding: 24px;
   border-radius: 12px;
-  display: none; /* Hidden by default */
+  display: none; 
   animation: slideIn 0.4s ease-out;
 }
+
+.ai-result {
+  background: rgba(138, 43, 226, 0.1);
+  border: 1px solid var(--ai);
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+  font-size: 0.95rem;
+}
+
+.ai-result p { color: #fff; }
 
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -168,6 +184,19 @@ select:focus {
 }
 .warning h3 { color: var(--gold); }
 
+/* Legal Notice Box */
+.legal-notice {
+  font-size: 0.75rem;
+  color: #aaa;
+  background: rgba(0,0,0,0.3);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
 /* Buttons */
 .btn {
   display: block;
@@ -192,18 +221,66 @@ select:focus {
   background: linear-gradient(135deg, #4a008f, #7232bd);
 }
 
-.btn:active {
-  transform: translateY(1px);
+.btn-ai {
+  background: linear-gradient(135deg, #8A2BE2, #4B0082);
+  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
 }
+
+.btn-ai:hover {
+  background: linear-gradient(135deg, #9932CC, #6A0DAD);
+  box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loaders */
+.loader {
+  display: none;
+  text-align: center;
+  margin-top: 15px;
+  color: var(--muted);
+  font-style: italic;
+}
+.loader i {
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Footer */
 footer {
   margin-top: 40px;
   border-top: 1px solid var(--line);
   padding-top: 24px;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--muted);
   text-align: center;
+}
+
+footer a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer-legal {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0,0,0,0.4);
+  border-radius: 8px;
+  font-size: 11px;
+  color: #888;
+  line-height: 1.5;
+  text-align: justify;
 }
 
 .highlight {
@@ -236,6 +313,7 @@ footer {
     </div>
   </header>
 
+  <!-- Standard Checker Section -->
   <section>
     <h2><i class="fa-solid fa-location-dot"></i> Step 1: Source</h2>
     <div class="step">
@@ -297,6 +375,33 @@ footer {
         <li><strong>CLEAN:</strong> Sanitize shelves or pantries where the item was stored.</li>
         <li><strong>REFUND:</strong> Take a photo of the UPC and contact the retailer.</li>
       </ul>
+
+      <!-- New: Action Links Block -->
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,77,77,0.3);">
+        <p style="margin-bottom:10px; font-size:0.95rem;">
+          <strong>Step 1: Contact the Source</strong><br>
+          View the official company contact details (phone/email) on the FDA notice:
+        </p>
+        <a href="https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/gold-star-distribution-inc-issues-recall-certain-fda-regulated-products-three-states-including-drugs" target="_blank" class="btn" style="background: rgba(255,77,77,0.1); border: 1px solid var(--danger); color: var(--danger); font-size: 1rem; margin-bottom: 20px;">
+          <i class="fa-solid fa-up-right-from-square"></i> Get Official Contact Info
+        </a>
+
+        <p style="margin-bottom:10px; font-size:0.95rem;">
+          <strong>Step 2: Request Refund Template</strong><br>
+          Need a sample email? Use our AI template drafter.
+        </p>
+        
+        <!-- SPECIFIC LEGAL NOTICE FOR AI TOOL -->
+        <div class="legal-notice">
+          <i class="fa-solid fa-scale-balanced"></i> <strong>LEGAL DISCLAIMER:</strong> This AI tool generates a generic sample template for informational purposes only. It is <strong>NOT</strong> legal advice and does not constitute a legal demand. By using this feature, you agree to hold V2G, GVI, and their affiliates harmless from any liability. You are responsible for reviewing and editing the content before sending.
+        </div>
+
+        <button class="btn btn-ai" style="width:100%" onclick="generateRefundEmail()">
+          ✨ Draft Refund Template (Sample Only)
+        </button>
+        <div id="refundLoader" class="loader"><i class="fa-solid fa-spinner"></i> Drafting email...</div>
+        <div id="refundResult" class="ai-result"></div>
+      </div>
     </div>
 
     <div id="resultWarning" class="result warning">
@@ -305,7 +410,7 @@ footer {
         There is uncertainty about your item. It might be safe, but you should exercise caution.
       </p>
       <ul>
-        <li>Double-check the <a href="#" style="color:var(--gold)">FDA Recall List</a> for specific UPC codes.</li>
+        <li>Double-check the <a href="https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/gold-star-distribution-inc-issues-recall-certain-fda-regulated-products-three-states-including-drugs" target="_blank">FDA Recall List</a> for specific UPC codes.</li>
         <li>If the item was bought at a listed store but isn't on the product list, ask the store manager.</li>
         <li><strong>When in doubt, throw it out.</strong></li>
       </ul>
@@ -314,7 +419,25 @@ footer {
     <div id="errorMsg" style="color: var(--danger); margin-top: 15px; display: none; font-weight: 600;">
       <i class="fa-solid fa-circle-xmark"></i> Please answer all questions to get a result.
     </div>
+  </section>
 
+  <!-- AI Feature Section -->
+  <section class="ai-section">
+    <h2><i class="fa-solid fa-robot" style="color: #c98eff"></i> AI Product Scout</h2>
+    <p>
+      Not sure if your specific brand is involved? Enter the product name below. 
+      <strong>Gemini</strong> will search the web for recall notices linking this product to Gold Star Distribution.
+    </p>
+    <div class="step">
+      <label for="productQuery">Product Name / Brand</label>
+      <input type="text" id="productQuery" placeholder="e.g., Blue Ribbon Spaghetti 1lb">
+    </div>
+    <button class="btn btn-ai" onclick="checkProductWithGemini()">
+      ✨ Scan with Gemini
+    </button>
+    
+    <div id="aiLoader" class="loader"><i class="fa-solid fa-spinner"></i> Searching recall databases...</div>
+    <div id="aiResult" class="ai-result"></div>
   </section>
 
   <section>
@@ -331,82 +454,182 @@ footer {
 
   <footer>
     <p>
-      <strong>Disclaimer:</strong> This tool is for educational purposes only and does not constitute medical or legal advice. 
-      Always follow official FDA guidance and instructions from your local health department.
+      Built by <strong><a href="https://www.v2gmultimedia.com" target="_blank">V2G Multimedia</a></strong> × <strong><a href="https://www.NAHUCEGVI.org" target="_blank">GVI</a></strong><br>
+      Part of the Food Safety Scrolls Project.<br>
+      <span style="font-size: 0.9em; opacity: 0.8;">Explore <a href="https://www.v2gmultimedia.com/somewhere-within--the-invenity-cosmic" target="_blank">The Invenity Cosmic</a></span>
     </p>
-    <p>
-      Built by <strong>V2G × Global Village Initiative</strong><br>
-      Part of the Food Safety Scrolls Project.
-    </p>
+    
+    <!-- Expanded Legal Footer -->
+    <div class="footer-legal">
+      <strong>TERMS OF USE AND LEGAL DISCLAIMER:</strong> 
+      This website and its tools are provided for educational and informational purposes only. We are NOT the news, a law firm, or a government agency. We are an independent entity aggregating publicly available safety information. 
+      <br><br>
+      <strong>NO LEGAL ADVICE:</strong> The content, including AI-generated email templates, does not constitute legal, medical, or professional advice. You should consult with a qualified attorney or healthcare provider for specific advice regarding your situation.
+      <br><br>
+      <strong>LIMITATION OF LIABILITY & INDEMNIFICATION:</strong> By using this site, you agree to indemnify, defend, and hold harmless V2G Multimedia, Global Village Initiative (GVI), their officers, directors, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, or expenses (including legal fees) arising out of or in any way connected with your access to or use of this website or the information contained herein. Use of any provided templates or information is strictly at your own risk.
+    </div>
   </footer>
 
 </div>
 
 <script>
+// --- Standard Logic ---
 function checkRecall() {
-  // Get values
   const store = document.getElementById('store').value;
   const category = document.getElementById('category').value;
   const listed = document.getElementById('listed').value;
   
-  // UI Elements
   const safeDiv = document.getElementById('resultSafe');
   const dangerDiv = document.getElementById('resultDanger');
   const warningDiv = document.getElementById('resultWarning');
   const errorMsg = document.getElementById('errorMsg');
+  const refundResult = document.getElementById('refundResult'); // hide prev results
 
-  // Reset Display
   safeDiv.style.display = 'none';
   dangerDiv.style.display = 'none';
   warningDiv.style.display = 'none';
   errorMsg.style.display = 'none';
+  refundResult.style.display = 'none';
 
-  // Validation
   if (store === "" || category === "" || listed === "") {
     errorMsg.style.display = 'block';
     return;
   }
 
-  // --- LOGIC ENGINE ---
-  
-  // 1. FROZEN EXCEPTION: The Gold Star recall typically affects dry storage. 
-  // If it's frozen, it's generally considered lower risk or outside scope unless explicitly listed.
-  // However, if the user explicitly says "Yes, it matches list", we must honor that over the category.
-  
   if (listed === "yes") {
-    // If it's on the list, it's danger, regardless of category (even if frozen, if they found a match, it's bad).
     dangerDiv.style.display = 'block';
     return;
   }
 
-  // 2. High Risk Logic
-  // If not explicitly "yes" on the list, check for strong indicators of danger
-  // (e.g. they are unsure, but it's a listed store AND a high risk category)
-  
   if (listed === "unsure" && store === "listed" && category !== "frozen") {
-    // Unsure + Listed Store + Dry Good = High caution needed (Warning/Danger lean)
     warningDiv.style.display = 'block';
     return;
   }
 
-  // 3. Safe Logic
-  // Must be NOT listed, and either bought at a safe store OR is a safe category
   if (listed === "no") {
     if (store === "notlisted") {
-      // Not on list, store not involved -> Safe
       safeDiv.style.display = 'block';
     } else if (category === "frozen") {
-      // Not on list, even if store is involved, frozen is usually safe in this specific recall context -> Safe
       safeDiv.style.display = 'block';
     } else {
-      // Not on list, but store IS involved and it's a dry good -> Warning (Inventory mix-ups possible)
       warningDiv.style.display = 'block';
     }
     return;
   }
-
-  // 4. Catch-all for "Unsure" listings
   warningDiv.style.display = 'block';
+}
+
+// --- Gemini API Logic ---
+
+const apiKey = ""; // System will inject key
+
+async function callGemini(prompt, useSearch = false) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+  
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+
+  if (useSearch) {
+    payload.tools = [{ "google_search": {} }];
+  }
+
+  // Exponential backoff retry logic
+  const delays = [1000, 2000, 4000, 8000, 16000];
+  
+  for (let i = 0; i <= delays.length; i++) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const data = await response.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+      
+    } catch (error) {
+      if (i === delays.length) throw error; // Re-throw after last attempt
+      await new Promise(r => setTimeout(r, delays[i]));
+    }
+  }
+}
+
+// Feature 1: AI Product Scout (Search Grounded)
+async function checkProductWithGemini() {
+  const product = document.getElementById('productQuery').value;
+  const resultDiv = document.getElementById('aiResult');
+  const loader = document.getElementById('aiLoader');
+
+  if (!product.trim()) {
+    resultDiv.innerHTML = "<span style='color:var(--danger)'>Please enter a product name.</span>";
+    resultDiv.style.display = 'block';
+    return;
+  }
+
+  loader.style.display = 'block';
+  resultDiv.style.display = 'none';
+
+  const prompt = `
+    The user is asking about a specific product: "${product}" in the context of the Gold Star Distribution recall (which involves rodent infestation/sanitation issues affecting dry goods, pet food, etc).
+    
+    Task:
+    1. Search for "${product} Gold Star Distribution recall" or general recall news.
+    2. Determine if this specific brand or product has been mentioned in relation to the Gold Star recall.
+    3. If yes, warn the user.
+    4. If no specific mention is found, advise the user to check the "Distributed By" label for "Gold Star" and inspect for signs of damage, as it might still be affected if bought from a recalled store.
+    5. Be concise, empathetic, and prioritize safety. Use formatting (bolding) for key advice.
+  `;
+
+  try {
+    const text = await callGemini(prompt, true); // true = enable Google Search
+    resultDiv.innerHTML = marked.parse(text);
+    resultDiv.style.display = 'block';
+  } catch (err) {
+    resultDiv.innerHTML = "⚠️ Unable to connect to AI. Please try again later.";
+    resultDiv.style.display = 'block';
+    console.error(err);
+  } finally {
+    loader.style.display = 'none';
+  }
+}
+
+// Feature 2: Refund Email Drafter
+async function generateRefundEmail() {
+  const store = document.getElementById('store').value;
+  // If store is generic value, try to infer or ask generic
+  let storeName = "the store Manager";
+  if(store === "listed") storeName = "Customer Service";
+  
+  const resultDiv = document.getElementById('refundResult');
+  const loader = document.getElementById('refundLoader');
+
+  loader.style.display = 'block';
+  resultDiv.style.display = 'none';
+
+  const prompt = `
+    Draft a generic, polite, but firm consumer refund request email (or script) for a customer to send to a retailer regarding the Gold Star Distribution recall.
+    The customer purchased an item that matches the recall criteria.
+    
+    IMPORTANT: This is a SAMPLE only. Do not act as a lawyer.
+    Include placeholders like [Product Name], [Date of Purchase], and [Receipt ID].
+    Mention that the item is unsafe due to the FDA-announced rodent infestation recall at the distribution level.
+    Ask for a full refund or store credit based on consumer protection standards.
+    Keep it professional and short.
+  `;
+
+  try {
+    const text = await callGemini(prompt, false);
+    resultDiv.innerHTML = "<strong>Copy this sample template:</strong><br><br>" + marked.parse(text);
+    resultDiv.style.display = 'block';
+  } catch (err) {
+    resultDiv.innerHTML = "⚠️ Error generating draft.";
+    resultDiv.style.display = 'block';
+  } finally {
+    loader.style.display = 'none';
+  }
 }
 </script>
 
